@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Sign in{% endblock %}
+{% block auth_content %}
+<main class="login-page">
+  <section class="login-visual"><a class="brand brand-light" href="#"><span class="brand-mark">SM</span><span class="brand-name">Sales Management System<small>BUSINESS SUITE</small></span></a>
+    <div class="visual-copy"><h1>Good business<br>starts with a<br><span>clear picture.</span></h1><p>One thoughtful workspace for every sale, every customer, every detail.</p></div>
+    <div class="visual-footer">Simple tools. Better decisions. <span>© 2026 Sales Management System</span></div>
+  </section>
+  <section class="login-panel"><div class="login-form-wrap"><div class="mobile-brand"><span class="brand-mark">SM</span> Sales Management System</div>
+    <div class="eyebrow">WELCOME BACK</div><h2>Sign in to your account</h2><p class="muted">Enter your credentials to access your workspace.</p>
+    <form method="post" class="stack-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <label>Username<input name="username" autocomplete="username" required autofocus placeholder="Your username"></label>
+      <label>Password<input type="password" name="password" autocomplete="current-password" required placeholder="Your password"></label>
+      <button class="button button-primary button-wide" type="submit">Sign in <span>→</span></button>
+    </form><p class="login-note">✦ &nbsp; Your workspace is protected with secure sign-in.</p><p class="login-help">First time here? <a href="{{ url_for('setup') }}">Create administrator account</a></p></div></section>
+</main>
+{% endblock %}

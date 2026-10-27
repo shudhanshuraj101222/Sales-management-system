@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Sales records{% endblock %}
+{% block heading %}Sales records{% endblock %}
+{% block content %}
+<div class="page-title-row compact-title"><div><span class="eyebrow">TRANSACTION HISTORY</span><h1>Sales records</h1><p>Search completed sales and open an invoice for the full details.</p></div></div>
+<section class="panel"><div class="panel-heading"><div><h2>Transactions</h2><p>Most recent 250 matching sales.</p></div></div>
+<form class="filter-form" method="get"><label>Search<input name="q" value="{{ search }}" placeholder="Invoice, customer or product"></label><label>From<input type="date" name="from" value="{{ date_from }}"></label><label>To<input type="date" name="to" value="{{ date_to }}"></label><label>Sort by<select name="sort"><option value="date" {% if sort == 'date' %}selected{% endif %}>Date</option><option value="customer" {% if sort == 'customer' %}selected{% endif %}>Customer</option><option value="amount" {% if sort == 'amount' %}selected{% endif %}>Amount</option><option value="id" {% if sort == 'id' %}selected{% endif %}>Invoice #</option></select></label><label>Order<select name="direction"><option value="desc" {% if direction == 'desc' %}selected{% endif %}>Newest / highest</option><option value="asc" {% if direction == 'asc' %}selected{% endif %}>Oldest / lowest</option></select></label><button class="button button-primary">Apply filters</button><a class="button button-outline" href="{{ url_for('sales_history') }}">Clear</a></form>
+{% if sales %}<div class="table-wrap"><table><thead><tr><th>INVOICE</th><th>DATE & TIME</th><th>CUSTOMER</th><th>CASHIER</th><th class="align-right">TOTAL</th><th></th></tr></thead><tbody>
+{% for sale in sales %}<tr><td><a class="table-link" href="{{ url_for('invoice', sale_id=sale.id) }}">#{{ "%05d"|format(sale.id) }}</a></td><td>{{ sale.sale_date.strftime('%b %d, %Y · %I:%M %p') }}</td><td>{{ sale.customer_name }}</td><td>{{ sale.cashier }}</td><td class="align-right amount">₹{{ "%.2f"|format(sale.total_amount) }}</td><td><a class="text-link" href="{{ url_for('invoice', sale_id=sale.id) }}">Invoice →</a></td></tr>{% endfor %}
+</tbody></table></div>{% else %}<div class="empty-state"><span>▤</span><strong>No matching transactions</strong><p>Try a different filter, or record a new sale.</p></div>{% endif %}</section>
+{% endblock %}

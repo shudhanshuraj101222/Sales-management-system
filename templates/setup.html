@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Create administrator{% endblock %}
+{% block auth_content %}
+<main class="login-page">
+  <section class="login-visual"><a class="brand brand-light" href="{{ url_for('login') }}"><span class="brand-mark">SM</span><span class="brand-name">Sales Management System<small>BUSINESS SUITE</small></span></a>
+    <div class="visual-copy"><h1>Make this<br>workspace<br><span>your own.</span></h1><p>Set up your administrator account to manage products, customers, sales and inventory.</p></div>
+    <div class="visual-footer">Simple tools. Better decisions. <span>© 2026 Sales Management System</span></div>
+  </section>
+  <section class="login-panel"><div class="login-form-wrap"><div class="mobile-brand"><span class="brand-mark">SM</span> Sales Management System</div>
+    <div class="eyebrow">FIRST-TIME SETUP</div><h2>Create administrator account</h2><p class="muted">This one-time account will have full access to your sales workspace.</p>
+    <form method="post" class="stack-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+      <label>Full name<input name="full_name" autocomplete="name" required maxlength="160" value="{{ request.form.get('full_name', '') }}" placeholder="Your name"></label>
+      <label>Username<input name="username" autocomplete="username" required maxlength="80" value="{{ request.form.get('username', '') }}" placeholder="Choose a username"></label>
+      <label>Password<input type="password" name="password" autocomplete="new-password" required minlength="10" placeholder="At least 10 characters"></label>
+      <label>Confirm password<input type="password" name="password_confirmation" autocomplete="new-password" required minlength="10" placeholder="Enter your password again"></label>
+      <button class="button button-primary button-wide" type="submit">Create account <span>→</span></button>
+    </form><p class="login-note">🔒 &nbsp; Your password is securely hashed before storage.</p><p class="login-help"><a href="{{ url_for('login') }}">← Back to sign in</a></p></div></section>
+</main>
+{% endblock %}

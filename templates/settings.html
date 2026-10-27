@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Settings{% endblock %}
+{% block heading %}Account settings{% endblock %}
+{% block content %}
+<div class="page-title-row compact-title"><div><span class="eyebrow">YOUR ACCOUNT</span><h1>Settings</h1><p>Manage your profile and keep your account secure.</p></div></div>
+<div class="settings-grid"><section class="panel"><div class="panel-heading"><div><h2>Profile</h2><p>Your current workspace account.</p></div></div><div class="profile-summary"><div class="avatar large">{{ user.full_name[0]|upper }}</div><div><h3>{{ user.full_name }}</h3><p>{{ user.username }} · {{ user.role|title }}</p></div></div><div class="profile-data"><div><span>Username</span><strong>{{ user.username }}</strong></div><div><span>Role</span><strong>{{ user.role|title }}</strong></div><div><span>Member since</span><strong>{{ user.created_at.strftime('%B %d, %Y') }}</strong></div></div></section>
+<section class="panel"><div class="panel-heading"><div><h2>Change password</h2><p>Use at least 10 characters for your new password.</p></div></div><form method="post" class="stack-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><label>Current password<input type="password" name="current_password" autocomplete="current-password" required></label><label>New password<input type="password" name="new_password" minlength="10" autocomplete="new-password" required></label><button class="button button-primary">Update password</button></form></section></div>
+{% endblock %}

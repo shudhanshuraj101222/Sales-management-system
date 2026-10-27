@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block title %}Overview{% endblock %}
+{% block heading %}Overview{% endblock %}
+{% block content %}
+<div class="page-title-row">
+  <div><span class="eyebrow">{{ today.strftime('%A, %B %d')|upper }} · YOUR BUSINESS AT A GLANCE</span><h1>Welcome back, {{ session.get('full_name', 'admin').split(' ')[0] }} <span class="title-sparkle">✦</span></h1><p>Here's what's happening with your store today.</p></div>
+  <a class="button button-primary" href="{{ url_for('create_sale') }}">＋ New sale</a>
+</div>
+<div class="stats-grid">
+  <article class="stat-card"><div class="stat-label"><span class="stat-icon lavender">₹</span><span>TODAY'S REVENUE</span></div><div class="stat-value">₹{{ "%.2f"|format(stats.today_revenue) }}</div><div class="stat-caption">Revenue from today's sales</div></article>
+  <article class="stat-card"><div class="stat-label"><span class="stat-icon blue">▤</span><span>TOTAL SALES</span></div><div class="stat-value">{{ stats.total_sales }}</div><div class="stat-caption">All-time transactions</div></article>
+  <article class="stat-card"><div class="stat-label"><span class="stat-icon mint">▦</span><span>ACTIVE PRODUCTS</span></div><div class="stat-value">{{ stats.product_count }}</div><div class="stat-caption">Products in your catalog</div></article>
+  <article class="stat-card"><div class="stat-label"><span class="stat-icon peach">♙</span><span>CUSTOMERS</span></div><div class="stat-value">{{ stats.customer_count }}</div><div class="stat-caption">People in your directory</div></article>
+</div>
+<div class="dashboard-grid">
+  <section class="panel revenue-panel"><div class="panel-heading"><div><h2>Revenue this week</h2><p>Your daily sales performance</p></div><a class="text-link" href="{{ url_for('reports') }}">View report →</a></div>
+    {% if weekly %}<div class="week-chart">{% for item in weekly %}<div class="week-bar-group"><span class="week-bar-value">₹{{ "%.0f"|format(item.revenue) }}</span><div class="week-bar-track"><div class="week-bar" style="height: {{ ((item.revenue|float / weekly_peak) * 100)|round(0) }}%"></div></div><span class="week-bar-label">{{ item.sales_day.strftime('%a') }}</span></div>{% endfor %}</div>{% else %}<div class="chart-empty">Your daily revenue will appear here after your first sale.</div>{% endif %}
+  </section>
+  <section class="panel stock-watch-panel"><div class="panel-heading"><div><h2>Stock watch</h2><p>Products to keep an eye on</p></div><span class="count-badge">{{ low_stock|length }}</span></div>
+  {% if low_stock %}<div class="low-stock-alert"><span>!</span><div><strong>{{ low_stock|length }} low-stock item{{ '' if low_stock|length == 1 else 's' }}</strong><small>Review inventory and restock soon.</small></div></div><a class="button button-outline inventory-button" href="{{ url_for('inventory') }}">Manage inventory</a>{% else %}<div class="empty-state compact"><span>✓</span><strong>Stock looks healthy</strong><p>No products need restocking right now.</p></div>{% endif %}
+  </section>
+</div>
+<div class="dashboard-grid recent-grid">
+  <section class="panel"><div class="panel-heading"><div><h2>Recent transactions</h2><p>Your latest completed sales</p></div><a class="text-link" href="{{ url_for('sales_history') }}">View all →</a></div>
+    {% if recent %}<div class="table-wrap"><table><thead><tr><th>INVOICE</th><th>CUSTOMER</th><th>DATE</th><th class="align-right">TOTAL</th></tr></thead><tbody>
+    {% for sale in recent %}<tr><td><a class="table-link" href="{{ url_for('invoice', sale_id=sale.id) }}">#{{ "%05d"|format(sale.id) }}</a></td><td>{{ sale.customer_name }}</td><td>{{ sale.sale_date.strftime('%b %d, %Y') }}</td><td class="align-right amount">₹{{ "%.2f"|format(sale.total_amount) }}</td></tr>{% endfor %}
+    </tbody></table></div>{% else %}<div class="empty-state"><span>▤</span><strong>No transactions yet</strong><p>Your completed sales will appear here.</p><a class="button button-outline" href="{{ url_for('create_sale') }}">Record a sale</a></div>{% endif %}
+  </section>
+</div>
+{% endblock %}

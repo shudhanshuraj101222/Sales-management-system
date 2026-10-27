@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block title %}Products{% endblock %}
+{% block heading %}Products{% endblock %}
+{% block content %}
+<div class="page-title-row compact-title"><div><span class="eyebrow">YOUR CATALOG</span><h1>Products</h1><p>Manage your products, pricing, and stock levels.</p></div><button class="button button-primary" type="button" onclick="document.getElementById('new-product-name').focus()">＋ Add product</button></div>
+<div class="catalog-layout">
+<section class="panel form-panel"><div class="panel-heading"><div><h2>Add a product</h2><p>Add an item to your catalog.</p></div></div>
+<form method="post" class="stack-form product-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <label>Product name<input id="new-product-name" name="name" required maxlength="180" placeholder="e.g. Canvas Tote Bag"></label>
+  <label>Category<input name="category" maxlength="100" placeholder="e.g. Accessories"></label>
+  <div class="form-pair"><label>Price (₹)<input name="unit_price" type="number" min="0" step="0.01" required placeholder="0.00"></label><label>Opening stock<input name="stock_quantity" type="number" min="0" value="0" required></label></div>
+  <label>Reorder level<input name="reorder_level" type="number" min="0" value="5" required></label>
+  <button class="button button-primary form-submit">Save product <span>→</span></button>
+</form></section>
+<section class="panel catalog-panel"><div class="panel-heading"><div><h2>Product catalog <span class="catalog-count">{{ products|length }}</span></h2><p>Your active products</p></div>
+<form class="search-form" method="get"><input name="q" value="{{ search }}" placeholder="Search products…" aria-label="Search products"><button class="button button-outline">Search</button></form></div>
+{% if products %}<div class="table-wrap"><table><thead><tr><th>PRODUCT</th><th>PRICE</th><th>IN STOCK</th><th>STATUS</th><th>ACTIONS</th></tr></thead><tbody>
+{% for product in products %}<tr><td><strong>{{ product.name }}</strong><small class="table-sub">{{ product.category or 'Uncategorized' }}</small></td><td class="amount">₹{{ "%.2f"|format(product.unit_price) }}</td><td><span class="stock-number">{{ product.stock_quantity }}</span><small class="table-sub">Reorder at {{ product.reorder_level }}</small></td><td>{% if product.stock_quantity <= product.reorder_level %}<span class="status-pill warning">Low stock</span>{% else %}<span class="status-pill good">In stock</span>{% endif %}</td><td class="action-cell"><details class="edit-details"><summary>Manage</summary><form class="popover-form" method="post" action="{{ url_for('edit_product', product_id=product.id) }}">
+<input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><label>Name<input name="name" value="{{ product.name }}" required></label><label>Category<input name="category" value="{{ product.category or '' }}"></label><label>Price<input name="unit_price" type="number" min="0" step="0.01" value="{{ product.unit_price }}" required></label><label>Reorder level<input name="reorder_level" type="number" min="0" value="{{ product.reorder_level }}" required></label><button class="button button-primary">Save changes</button></form></details>
+<form method="post" action="{{ url_for('delete_product', product_id=product.id) }}" onsubmit="return confirm('Archive this product? It will no longer be available for new sales.')"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}"><button class="link-danger">Archive</button></form></td></tr>{% endfor %}
+</tbody></table></div>{% else %}<div class="empty-state"><span>▦</span><strong>No products found</strong><p>Add a product above or try another search.</p></div>{% endif %}
+</section>
+{% endblock %}

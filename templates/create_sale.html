@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block title %}New sale{% endblock %}
+{% block heading %}Create a sale{% endblock %}
+{% block content %}
+<div class="page-title-row compact-title"><div><span class="eyebrow">SALES WORKSPACE</span><h1>Create a sale</h1><p>Build an invoice. Inventory is checked and updated when you save.</p></div></div>
+<form method="post" class="sale-layout" id="sale-form"><input type="hidden" name="_csrf_token" value="{{ csrf_token() }}">
+  <div class="sale-main panel">
+    <div class="panel-heading"><div><h2>Sale details</h2><p>Choose a customer and add products to this invoice.</p></div></div>
+    <label class="field-narrow">Customer <span class="muted">(optional)</span><select name="customer_id"><option value="">Walk-in customer</option>{% for customer in customers %}<option value="{{ customer.id }}">{{ customer.name }}</option>{% endfor %}</select></label>
+    <div class="sale-lines-heading"><h3>Items</h3><button class="button button-outline button-small" id="add-sale-line" type="button">＋ Add item</button></div>
+    <div id="sale-lines">
+      <div class="sale-line">
+        <label class="line-product">Product<select name="product_id[]" class="product-select" required><option value="">Select product</option>{% for product in products %}<option value="{{ product.id }}" data-price="{{ product.unit_price }}" data-stock="{{ product.stock_quantity }}">{{ product.name }} · {{ product.stock_quantity }} available · ₹{{ "%.2f"|format(product.unit_price) }}</option>{% endfor %}</select></label>
+        <label class="line-quantity">Qty<input name="quantity[]" class="quantity-input" type="number" min="1" value="1" required></label>
+        <div class="line-subtotal"><span>SUBTOTAL</span><strong>₹<b class="subtotal-value">0.00</b></strong></div>
+        <button type="button" class="remove-line" aria-label="Remove item" title="Remove item">×</button>
+      </div>
+    </div>
+    {% if not products %}<div class="notice">No products are currently in stock. Add stock in Inventory before creating a sale.</div>{% endif %}
+  </div>
+  <aside class="sale-summary panel"><h2>Order summary</h2><div class="summary-row"><span>Items subtotal</span><strong id="sale-total">₹0.00</strong></div><div class="summary-row muted"><span>Tax</span><span>Not configured</span></div><div class="summary-total"><span>Total due</span><strong id="sale-total-final">₹0.00</strong></div><p class="summary-hint">Prices are captured at the time of sale. Stock is only deducted after a successful save.</p><button class="button button-primary button-wide" type="submit" {% if not products %}disabled{% endif %}>Complete sale <span>→</span></button><a class="cancel-link" href="{{ url_for('sales_history') }}">Cancel</a></aside>
+</form>
+<template id="sale-line-template"><div class="sale-line"><label class="line-product">Product<select name="product_id[]" class="product-select" required><option value="">Select product</option>{% for product in products %}<option value="{{ product.id }}" data-price="{{ product.unit_price }}" data-stock="{{ product.stock_quantity }}">{{ product.name }} · {{ product.stock_quantity }} available · ₹{{ "%.2f"|format(product.unit_price) }}</option>{% endfor %}</select></label><label class="line-quantity">Qty<input name="quantity[]" class="quantity-input" type="number" min="1" value="1" required></label><div class="line-subtotal"><span>SUBTOTAL</span><strong>₹<b class="subtotal-value">0.00</b></strong></div><button type="button" class="remove-line" aria-label="Remove item">×</button></div></template>
+{% endblock %}

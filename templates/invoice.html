@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Invoice #{{ sale.id }}{% endblock %}
+{% block heading %}Invoice #{{ "%05d"|format(sale.id) }}{% endblock %}
+{% block content %}
+<div class="page-title-row compact-title"><div><span class="eyebrow">SALES HISTORY</span><h1>Invoice #{{ "%05d"|format(sale.id) }}</h1><p>Transaction details and itemized receipt.</p></div><div class="invoice-actions"><button class="button button-primary" type="button" onclick="window.print()">Print invoice</button></div></div>
+<article class="panel invoice-sheet">
+  <div class="invoice-head"><div><span class="brand-mark">SM</span><div><strong>Sales Management System</strong><small>SALES INVOICE</small></div></div><div class="invoice-number"><span>INVOICE</span><strong>#{{ "%05d"|format(sale.id) }}</strong></div></div>
+  <div class="invoice-parties"><div><span>BILLED TO</span><strong>{{ sale.customer_name }}</strong>{% if sale.email %}<small>{{ sale.email }}</small>{% endif %}{% if sale.phone %}<small>{{ sale.phone }}</small>{% endif %}</div><div><span>SALE DATE</span><strong>{{ sale.sale_date.strftime('%B %d, %Y') }}</strong><small>{{ sale.sale_date.strftime('%I:%M %p') }}</small></div><div><span>PROCESSED BY</span><strong>{{ sale.cashier }}</strong></div></div>
+  <div class="table-wrap"><table><thead><tr><th>ITEM</th><th>UNIT PRICE</th><th>QUANTITY</th><th class="align-right">AMOUNT</th></tr></thead><tbody>{% for item in details %}<tr><td><strong>{{ item.product_name }}</strong></td><td>₹{{ "%.2f"|format(item.unit_price) }}</td><td>{{ item.quantity }}</td><td class="align-right amount">₹{{ "%.2f"|format(item.subtotal) }}</td></tr>{% endfor %}</tbody></table></div>
+  <div class="invoice-total"><span>Total due</span><strong>₹{{ "%.2f"|format(sale.total_amount) }}</strong></div><p class="invoice-thanks">Thank you for your business.</p>
+</article>
+{% endblock %}
